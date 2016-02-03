@@ -32,10 +32,10 @@ class SoftwareProduct(models.Model):
     fc_date = models.DateField(default=timezone.now, verbose_name="FC")
     cs_date = models.DateField(default=timezone.now, verbose_name="CS")
 
-#     def __str__(self):
-#         return "Software Product: {sp} chipset: {chip} active: {flag} SOD: {sod} FC: {fc} CS: {cs}".format(
-# sp=self.sp_name, chip=self.chipset, flag=self.active, sod=self.sod_date,
-# fc=self.fc_date, cs=self.cs_date)
+    def __unicode__(self):
+        return "Software Product: {sp} chipset: {chip} active: {flag} SOD: {sod} FC: {fc} CS: {cs}".format(
+            sp=self.sp_name, chip=self.chipset.chip, flag=self.active, sod=self.sod_date,
+            fc=self.fc_date, cs=self.cs_date)
 
 
 class Area(models.Model):
