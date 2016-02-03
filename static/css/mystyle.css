@@ -1,0 +1,17 @@
+
+
+input.mys, select.mys { 
+    width : auto;
+}
+
+div.myscolb {
+    padding: 0% 0% 3% 2%;
+}
+
+div.mysformdiv {
+    padding: 2% 2% 0% 2%;
+}
+
+button.mysbtn {
+    width: 100%
+}

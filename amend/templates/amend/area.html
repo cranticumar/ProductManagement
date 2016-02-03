@@ -1,0 +1,9 @@
+<select name="area_select" id="area_select" class="form-control mys">
+    <option disabled selected></option>
+    <option value="test">test</option>
+    {% if areas %}
+    {% for a in areas %}
+    <option value="{{ a.id }}">{{ a.area }}</option>
+    {% endfor %}
+    {% endif %}
+</select>

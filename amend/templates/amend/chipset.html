@@ -1,0 +1,8 @@
+<select name="chip_select" class="form-control mys" id="chip_select">
+    <option disabled selected></option>
+    {% if chipsets %}
+    {% for c in chipsets %}
+    <option value="{{ c.id }}">{{ c.chip }}</option>
+    {% endfor %}
+    {% endif %}
+</select>

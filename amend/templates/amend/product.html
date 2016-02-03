@@ -1,0 +1,190 @@
+{% extends 'camerahome/base.html'  %}
+
+{% block menulist %}
+{% for menu,link  in sidemenu.items %}
+<li><a href="{{ link }}">{{ menu }}</a></li>
+{% endfor %}
+{% endblock %}
+
+
+{% block page %}
+{% if loadform == 'chip' %}
+<form name="chipform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>Chip Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="chip" class="col-sm-2 control-label">Chip</label>
+        <input type="text" name="chip" id="chip" class="form-control mys">
+    </div>
+    <div class="form-group">
+        <label for="chip_name" class="col-sm-2 control-label">Name</label>
+        <input type="text" name="chip_name" id="chip_name" class="form-control mys">
+    </div>    
+    <div class="form-group">
+        <label for="chip_family" class="col-sm-2 control-label">Family</label>
+        <input type="text" name="chip_family" id="chip_family" class="form-control mys">
+    </div>
+    <div class="form-group">
+        <input type="submit" name="chip_submit" value="Chip It" class="btn btn-primary">
+        {{ chipform_msg }}
+    </div>
+</form>
+{% elif loadform == 'sp' %}
+<form name="spform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>SP Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="sp" class="col-sm-2 control-label">Software Product</label>
+        <input type="text" name="sp" id="sp" class="form-control mys">
+    </div>
+    <div class="form-group">
+        <label for="chip_select" class="col-sm-2 control-label">Chipset</label>
+        {% include "amend/chipset.html" %}
+    </div>
+    <div class="form-group">
+        <h4>Milestones</h4>
+        <label for="sp_soddate" class="col-sm-2 control-label">SoD</label>
+        <input type="date" name="sp_soddate" id="sp_soddate" class="form-control mys"></input>
+        <label for="sp_fcdate" class="col-sm-2 control-label">FC</label>
+        <input type="date" name="sp_fcdate" id="sp_fcdate" class="form-control mys"></input>
+        <label for="sp_csdate" class="col-sm-2 control-label">CS</label>
+        <input type="date" name="sp_csdate" id="sp_csdate" class="form-control mys"></input>
+    </div>
+    <div class="form-group">
+        <input type="submit" name="sp_submit" value="Add SP" class="btn btn-primary">
+        {{ spform_msg }}
+    </div>
+</form>
+{% elif loadform == 'area' %}
+<form name="areaform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>Area Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="area" class="col-sm-2 control-label">Area</label>
+        <input type="text" name="area" id="area" class="form-control mys">
+    </div>
+    <div class="form-group">
+        <input type="submit" name="area_submit" value="Add Area" class="btn btn-primary">
+        <input type="submit" name="default_areas" value="Insert Default Areas" class="btn btn-primary">
+        {{ areaform_msg }}
+    </div>
+</form>
+{% elif loadform == 'subarea' %}
+<form name="subareaform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>Sub Area Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="area_select" class="col-sm-2 control-label">Area</label>
+        {% include "amend/area.html" %}
+    </div>
+    <div class="form-group">
+        <label for="subarea" class="col-sm-2 control-label">Sub Area</label>
+        <input type="text" name="subarea" id="subarea" class="form-control mys">
+    </div>
+    <div class="form-group">
+        <input type="submit" name="area_submit" value="Add Area" class="btn btn-primary">
+        <input type="submit" name="default_areas" value="Insert Default Areas" class="btn btn-primary">
+        {{ areaform_msg }}
+    </div>
+</form>
+{% elif loadform == 'geo' %}
+<form name="geoform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>Geo Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="geo" class="col-sm-2 control-label">Geo</label>
+        <input type="text" name="geo" id="geo" class="form-control mys"></input>
+    </div>
+    <div class="form-group">
+        <input type="submit" name="geo_submit" value="Insert Geo" class="btn btn-primary">
+        {{ geoform_msg }}
+    </div>
+</form>
+{% elif loadform == 'trends' %}
+<form name="trendform" method="post" action="{% url 'amendproduct' %}" role="form">
+    <legend>Trends Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="sp_select" class="col-sm-2 control-label">Software Product</label>
+        {% include "amend/sp.html" %}
+    </div>
+    <div class="form-group">
+        <label for="area_select" class="col-sm-2 control-label">Area</label>
+        {% include "amend/area.html" %}
+    </div>
+    <div class="form-group">
+        <label for="pstab" class="col-sm-2 control-label">Pre-Silicon Trend</label>
+        <table id="pstab">
+            {% include "amend/trend.html" %}
+        </table>
+        <br>
+        <input type="button" onclick="addTrend('pstab')" value="Add Trend" class="btn btn-success">
+        <input type="button" onclick="deleteTrends('pstab')" value="Delete Selected Trends" class="btn btn-danger">
+    </div>
+    <div class="form-group">
+        <label for="fctab" class="col-sm-2 control-label">FC Trend</label>
+        <table id="fctab">
+            {% include "amend/trend.html" %}
+        </table>
+        <br>
+        <input type="button" onclick="addTrend('fctab')" value="Add Trend" class="btn btn-success">
+        <input type="button" onclick="deleteTrends('fctab')" value="Delete Selected Trends" class="btn btn-danger">
+    </div>
+    <div class="form-group">
+        <label for="CStab" class="col-sm-2 control-label">CS Trend</label>
+        <table id="cstab" class="pure-table">
+            {% include "amend/trend.html" %}
+        </table>
+        <br>
+        <input type="button" onclick="addTrend('cstab')" value="Add Trend" class="btn btn-success">
+        <input type="button" onclick="deleteTrends('cstab')" value="Delete Selected Trends" class="btn btn-danger">
+    </div>
+    <div class="form-group">
+        <input type="submit" name="trend_submit" value="Insert Trends" class="btn btn-primary">
+    </div>
+</form>
+{% elif loadform == 'counts' %}
+<form name="countform" method="post" action="{% url 'amendproduct' %}" role="form" id="countform">
+    <legend>Test Case Counts Amendment</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="sp_select" class="col-sm-2 control-label">Software Product</label>
+        {% include "amend/sp.html" %}
+    </div>
+    <div class="form-group" style="display:none" id="areafield">
+        <label for="area_select" class="col-sm-2 control-label">Area</label>
+        {% include "amend/area.html" %}
+    </div>
+    <div>
+        <table id="mainTable" class="table table-striped" style="display:none">
+            <thead><tr><th>Sub Area</th><th>L0</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th></tr></thead>
+            <tbody>
+              <tr><td>Functional(QIPL)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>Functional(SH)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>Stability(QIPL)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>Stability(SH)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>IQ(QIPL)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>IQ(SH)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>CTS(QIPL)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>CTS(SH)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>ITS(QIPL)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>ITS(SH)</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+            </tbody>
+            <tfoot><tr><th><strong>TOTAL</strong></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot>
+        </table>
+    </div>
+    <div class="form-group">
+        <input type="submit" name="count_submit" value="Freeze Counts" class="btn btn-primary">
+    </div>
+</form>
+{% endif %}
+<script>
+    $('#countform select[name="sp_select"]').change(function(e) {
+        $('#areafield').show();
+    });
+    
+    $('#countform select[name="area_select"]').change(function(e) {
+        $('#mainTable').show();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+<tr>
+    <th></th>
+    <th>Date</th>
+    <th>Coverage</th>
+    <th>Pass</th>
+</tr>
+<tr>
+    <td><input type="checkbox" name="trend_select" class="form-control mys"></td>
+    <td><input type="date" name="trend_date" class="form-control mys"></td>
+    <td><input type="number" name="trend_cov" class="form-control mys"></td>
+    <td><input type="number" name="trend_pass" class="form-control mys"></td>
+</tr>
+<script type="text/javascript">
+function addTrend(tableID) {
+    var table = document.getElementById(tableID);
+    var rowCount = table.rows.length;
+    var row = table.insertRow(rowCount);
+    var colCount = table.rows[1].cells.length;
+    for (var i = 0; i < colCount; i++) {
+        var newCell = row.insertCell(i);
+        newCell.innerHTML = table.rows[1].cells[i].innerHTML;
+        switch(newCell.childNodes[0].type) {
+        case "number":
+            newCell.childNodes[0].value = "";
+            break;
+        case "checkbox":
+            newCell.childNodes[0].checked = false;
+            break;
+        case "date":
+            break;
+        }
+    }
+}
+
+function deleteTrends(tableID) {
+    try {
+        var table = document.getElementById(tableID);
+        var rowCount = table.rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            var chk = table.rows[i].cells[0].childNodes[0];
+            if(null != chk && true == chk.checked) {
+                if (rowCount <= 2) {
+                    alert("Cannot delete all the rows");
+                    break;
+                }
+                table.deleteRow(i);
+                rowCount--;
+                i--;
+            }
+        }
+    }catch(e) {
+        alert(e);
+    }
+}
+</script>
