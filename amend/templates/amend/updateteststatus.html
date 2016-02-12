@@ -1,0 +1,43 @@
+{% extends 'camerahome/base.html'  %}
+
+{% block menulist %}
+{% for menu,link  in sidemenu.items %}
+<form name="updateform" method="post" action="{% url 'updatetest' %}" role="form" style="padding: 0px 0px 20px 20px">
+    {% csrf_token %}
+    <div id="spfield" class="form-group">
+        {% include 'amend/sp.html' %}
+        <input type="hidden" name="sp_select" id="hidensp">
+    </div>
+    <div style="display: none" id="areafield" class="form-group">
+        {% include 'amend/area.html' %}
+        <input type="hidden" name="area_select" id="hidenarea">
+    </div>
+    <input type="submit" name="get_table" value="Get Table to Update" class="btn btn-primary">
+    {{ update_msg }}
+</form>
+{% endfor %}
+{% endblock %}
+
+
+{% block page %}
+<legend>{{ sp_name.sp_name }} {{ area }} Update Test Status</legend>
+<div id="statusupdate" style="display: none">
+    <table class="table table-inverse" id="mainTable">
+    {% include 'amend/tccounts.html' %}
+    </table>
+</div>
+<script>
+$('#spfield select[name="sp_select"]').change(function(e) {
+    document.getElementById('hidensp').value = document.getElementById('sp_select').value;
+    document.getElementById('sp_select').disabled = true;
+    $('#areafield').show();
+});
+
+$('#areafield select[name="area_select"]').change(function(e) {
+    document.getElementById('hidenarea').value = document.getElementById('area_select').value;
+    document.getElementById('area_select').disabled = true;
+    $('#statusupdate').show();
+    populateTable('mainTable', 'area_select');
+});
+</script>
+{% endblock %}

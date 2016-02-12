@@ -1,9 +1,11 @@
 # from django.http import HttpResponse
+from __future__ import print_function
 from django.core.urlresolvers import reverse
-from .models import Chipset, SoftwareProduct
 from django.shortcuts import render
 from django.db.utils import IntegrityError
 from collections import OrderedDict
+from django.core.exceptions import ValidationError
+from camera.helpers.amendhelper import ProductViewHelper
 import logging
 
 logging.basicConfig()
@@ -27,67 +29,90 @@ def product(request, loadform=None):
 
     if not loadform is None:
         context.setdefault('loadform', loadform)
-        context = _load_data_for_forms(context)
+
     elif request.POST.get('chip_submit') == 'Chip It':
         context.setdefault('loadform', 'chip')
         try:
-            context = _add_chip(request, context)
+            context = ProductViewHelper._add_chip(request, context)
         except IntegrityError:
             context.setdefault('chipform_msg', 'Chip Already Exists')
+        except ValidationError as e:
+            context.setdefault('chipform_msg', e.message)
+
     elif request.POST.get('sp_submit') == 'Add SP':
-        pass
+        context.setdefault('loadform', 'sp')
+        try:
+            context = ProductViewHelper._add_sp(request, context)
+        except IntegrityError:
+            context.setdefault('spform_msg', 'Software Product Already Exists')
+        except ValidationError as e:
+            context.setdefault('spform_msg', e.message)
+
     elif request.POST.get('area_submit') == 'Add Area':
-        pass
+        context.setdefault('loadform', 'area')
+        try:
+            context = ProductViewHelper._add_areas(request, context)
+        except IntegrityError:
+            context.setdefault('areaform_msg', 'Area Already Exists')
+        except ValidationError as e:
+            context.setdefault('areaform_msg', e.message)
+
     elif request.POST.get('default_areas') == 'Insert Default Areas':
-        pass
+        context.setdefault('loadform', 'area')
+        context.setdefault('areaform_msg', "No Functionality for now")
+
+    elif request.POST.get('subarea_submit') == 'Add SubArea':
+        context.setdefault('loadform', 'subarea')
+        try:
+            context = ProductViewHelper._add_subarea(request, context)
+        except ValidationError as e:
+            context.setdefault('subareaform_msg', e.message)
+
     elif request.POST.get('geo_submit') == 'Insert Geo':
-        pass
+        context.setdefault('loadform', 'geo')
+        try:
+            context = ProductViewHelper._add_geo(request, context)
+        except IntegrityError:
+            context.setdefault('geoform_msg', 'Location Already Exists')
+        except ValidationError as e:
+            context.setdefault('geoform_msg', e.message)
+
     elif request.POST.get('trend_submit') == "Insert Trends":
-        pass
-    elif request.POST.get('count_submit') == "Freeze Counts":
+        context.setdefault('loadform', 'trends')
+
+    elif request.POST.get('count_submit'):
         context.setdefault('loadform', 'counts')
-        context = _load_data_for_forms(context)
+        btn = request.POST.get('count_submit')
+        try:
+            if btn == "Freeze Counts":
+                context = ProductViewHelper._freeze_counts(request, context)
+            elif btn == "Modify Counts":
+                pass
+            elif btn == "Fetch Counts":
+                pass
+        except ValidationError as e:
+            context.setdefault('countsform_msg', e.message)
+
+    context = ProductViewHelper._load_data_for_forms(context)
     return render(request, 'amend/product.html', context)
 
 
-def _load_data_for_forms(context):
-    if context['loadform'] == 'sp':
-        chipsets = Chipset.objects.all()
-        context.setdefault('chipsets', chipsets)
-    elif context['loadform'] in ['counts', 'trends', 'area']:
-        sps = SoftwareProduct.objects.all()
-        context.setdefault('sps', sps)
+def updateTestStatus(request):
+    page = reverse('updatetest')
+    context = {
+        'page': page,
+        'sidemenu': {'load': 'hardcode'}
+    }
 
-    return context
+    spn = ProductViewHelper._query_by_spid(sp_id=request.POST.get('sp_select'))
+    ar = request.POST.get('area_select')
 
+    if spn:
+        context.setdefault('sp_name', spn)
 
-def _add_chip(request, context):
-    c = Chipset(chip=request.POST.get('chip'), name=request.POST.get(
-        'chip_name'), family=request.POST.get('chip_family'))
-    c.save()
-    context.setdefault('chipform_msg', c.chip + " chip is in")
-    return context
+    if ar:
+        context.setdefault('area', ar)
 
-
-def _add_sp(request, context):
-    pass
-
-
-def _add_geo(request, context):
-    pass
-
-
-def _add_areas(request, context):
-    pass
-
-
-def _add_subareas(request, context):
-    pass
-
-
-def _add_trends(request, context):
-    pass
-
-
-def _freeze_counts(request, context):
-    pass
+    ProductViewHelper._load_data_for_forms(context, get='sps')
+    ProductViewHelper._load_data_for_forms(context, get='areas')
+    return render(request, 'amend/updateteststatus.html', context)

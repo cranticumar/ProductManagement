@@ -8,5 +8,7 @@ from . import views
 
 urlpatterns = [
     url(r'^product/$', views.product, name='amendproduct'),
-    url(r'^product/(?P<loadform>[a-z]+)/$', views.product, name='amendproduct')
+    url(r'^product/(?P<loadform>[a-z]+)/$',
+        views.product, name='amendproduct'),
+    url(r'^updatetest/$', views.updateTestStatus, name='updatetest')
 ]

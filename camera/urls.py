@@ -22,6 +22,7 @@ from django.views.static import serve as staticserve
 from camerahome.rest.urls import adminrouter
 
 urlpatterns = [
+    url(r'^reports/', include('reports.urls')),
     url(r'^amend/', include('amend.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^$', camhomeviews.home, name='home'),

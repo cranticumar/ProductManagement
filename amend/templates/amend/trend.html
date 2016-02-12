@@ -6,7 +6,7 @@
 </tr>
 <tr>
     <td><input type="checkbox" name="trend_select" class="form-control mys"></td>
-    <td><input type="date" name="trend_date" class="form-control mys"></td>
+    <td><input type="date" name="trend_date" id="datepicker" class="form-control mys" placeholder="mm/dd/yyyy"></td>
     <td><input type="number" name="trend_cov" class="form-control mys"></td>
     <td><input type="number" name="trend_pass" class="form-control mys"></td>
 </tr>
@@ -19,6 +19,7 @@ function addTrend(tableID) {
     for (var i = 0; i < colCount; i++) {
         var newCell = row.insertCell(i);
         newCell.innerHTML = table.rows[1].cells[i].innerHTML;
+        newCell.childNodes[0].name = newCell.childNodes[0].name + i;
         switch(newCell.childNodes[0].type) {
         case "number":
             newCell.childNodes[0].value = "";

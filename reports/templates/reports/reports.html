@@ -1,0 +1,30 @@
+{% extends 'camerahome/base.html'  %}
+
+{% block menulist %}
+{% for menu,link  in sidemenu.items %}
+<li><a href="{{ link }}">{{ menu }}</a></li>
+{% endfor %}
+{% endblock %}
+
+
+{% block page %}
+{{ report }}
+{% if loadpage == 'sp' %}
+<form name="byspform" method="POST" action="/reports/reportsby/sp/" role="form">
+    <legend>Get Report by SP</legend>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="sp_select" class="col-sm-2 control-label">Software Product</label>
+        {% include "amend/sp.html" %}
+    </div>
+    <div class="form-group">
+        <label for="area_select" class="col-sm-2 control-label">Area</label>
+        {% include "amend/area.html" %}
+    </div>
+    <div class="form-group">
+        <input type="submit" name="by" value="Fetch Report" class="btn btn-primary">
+        {{ byspform_msg }}
+    </div>
+</form>
+{% endif %}
+{% endblock %}

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'camerahome',
-    'amend'
+    'amend',
+    'reports'
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -1,0 +1,101 @@
+<thead>
+    <tr>
+        <th style="text-align: center">Sub Area</th>
+        <th style="text-align: center">L0</th>
+        <th style="text-align: center">L1</th>
+        <th style="text-align: center">L2</th>
+        <th style="text-align: center">L3</th>
+        <th style="text-align: center">L4</th>
+        <th style="text-align: center">Sub Area Total</th>
+    </tr>
+</thead>
+<tbody>
+
+</tbody>
+<tfoot>
+    <tr>
+        <th style="text-align: center"><strong>LEVEL TOTAL</strong></th>
+        <th style="text-align: center"><input type="number" name="L0T" readonly="true"></th>
+        <th style="text-align: center"><input type="number" name="L1T" readonly="true"></th>
+        <th style="text-align: center"><input type="number" name="L2T" readonly="true"></th>
+        <th style="text-align: center"><input type="number" name="L3T" readonly="true"></th>
+        <th style="text-align: center"><input type="number" name="L4T" readonly="true"></th>
+        <th style="text-align: center"><input type="number" name="LevelTotal" readonly="true"></th>
+    </tr>
+</tfoot>
+<script type="text/javascript">
+function populateTable(tableID, selectID) {
+    var select = document.getElementById(selectID);
+    $.getJSON('/api/rest/amend/subareas/?format=json').then(function(data) {
+        subareas = data.results;    
+        $.getJSON('/api/rest/amend/locations/?format=json').then(function(data) {
+            locobjs = data.results;        
+            for (var sa in subareas) {
+                area = subareas[sa]['feature_area']['area'];
+                selected_area = select.value;
+                if (area == selected_area) {
+                    for (var loc in locobjs) {
+                        var sub_area = subareas[sa]['subarea'] + " (" + locobjs[loc]['geo'] + ")";
+                        var iname = subareas[sa]['subarea'] + "_" + locobjs[loc]['geo'] + "_";
+                        var nr = '<tr>';
+                        nr = nr.concat('<th>' + sub_area + '</th>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'L0" onkeyup="calc('+ tableID + ');"></td>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'L1" onkeyup="calc('+ tableID + ');"></td>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'L2" onkeyup="calc('+ tableID + ');"></td>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'L3" onkeyup="calc('+ tableID + ');"></td>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'L4" onkeyup="calc('+ tableID + ');"></td>');
+                        nr = nr.concat('<td style="text-align: center"><input type="number" name="' + iname +'LTotal" readonly="true"></td>');
+                        nr = nr.concat('</tr>');
+                        $("#" + tableID + " tbody").append(nr);
+                    }
+                }
+            }
+        });
+    });
+}
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function calc(element) {
+    var tb = element.children[1];
+    var tf = element.children[2];
+    var rowCount = tb.rows.length;
+    var colCount = tb.rows[1].cells.length;
+    var i = new Array();
+    for (var r = 0; r < rowCount; r ++) {
+        var tot = 0;
+        i[r] = new Array();
+        for (var c = 1; c < colCount; c ++) {
+            if (c < (colCount - 1)) {
+                var fetched = tb.children[r].children[c].children[0].value;
+                if (fetched === "" || !isNumber(fetched)) {
+                    fetched = 0;
+                }
+                
+                fetched = parseInt(fetched, 10);
+                i[r][c-1] = fetched;
+                tot = tot + fetched;
+            } else {
+                tb.children[r].children[colCount-1].children[0].value = tot;
+            }
+        }
+    }
+    
+    var totals = new Array();
+    for (var x in i) {
+        for (var y in i[x]) {
+            if (typeof totals[y] !== 'undefined') {
+                totals[y] = totals[y] + i[x][y];
+            } else {
+                totals[y] = i[x][y];
+            }
+        }
+    }
+    
+    for (var x = 1; x <= totals.length; x++) {
+        tf.children[0].children[x].children[0].value = totals[x-1];
+    }
+}
+</script>

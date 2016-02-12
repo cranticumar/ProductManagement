@@ -1,5 +1,5 @@
 <select name="sp_select" class="form-control mys" id="sp_select">
-    <option disabled selected></option>
+    <option value="" disabled selected>Select SP</option>
     {% if sps %}
     {% for s in sps %}
     <option value="{{ s.id }}">{{ s.sp_name }}</option>
