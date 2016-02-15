@@ -6,8 +6,9 @@ Created on Jan 30, 2016
 from rest_framework import viewsets
 from amend.models import Chipset, SoftwareProduct, Area, \
     SubArea, Geo, CaseCount
-from .serializers import ChipsetSerializer, SoftwareProductSerializer, \
+from amend.rest.serializers import ChipsetSerializer, SoftwareProductSerializer, \
     AreaSerializer, SubAreaSerializer, GeoSerializer, CaseCountSerializer
+from amend.rest.filters import CaseCountFilter
 
 
 class ChipsetViewSet(viewsets.ModelViewSet):
@@ -38,3 +39,4 @@ class GeoAreaViewSet(viewsets.ModelViewSet):
 class CaseCountViewSet(viewsets.ModelViewSet):
     queryset = CaseCount.objects.all()
     serializer_class = CaseCountSerializer
+    filter_class = CaseCountFilter
