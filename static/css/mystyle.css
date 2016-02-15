@@ -1,3 +1,7 @@
+.mysbody {
+    font-size: 95%;
+}
+
 input.mys, select.mys { 
     width : auto;
 }
@@ -12,4 +16,7 @@ div.mysformdiv {
 
 button.mysbtn {
     width: 100%
+}
+div.fatforms {
+    font-size: 95%;
 }
