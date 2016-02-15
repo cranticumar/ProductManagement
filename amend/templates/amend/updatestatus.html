@@ -12,20 +12,30 @@
         {% include 'amend/area.html' %}
         <input type="hidden" name="area_select" id="hidenarea">
     </div>
-    <input type="submit" name="get_table" value="Get Table to Update" class="btn btn-primary">
-    {{ update_msg }}
-</form>
 {% endfor %}
 {% endblock %}
 
 
 {% block page %}
-<legend>{{ sp_name.sp_name }} {{ area }} Update Test Status</legend>
-<div id="statusupdate" style="display: none">
-    <table class="table table-inverse" id="mainTable">
-    {% include 'amend/tccounts.html' %}
-    </table>
-</div>
+    <legend>Update Test Status</legend>
+    <div id="statusupdate" style="display: none;" class="fatforms">
+        <table class="table table-striped table-hover" id="mainTable">
+        {% include 'amend/updatecounts.html' %}
+        </table>
+        <div id="issues" class="form-group">
+            <label for="cr">CR</label>
+            <input type="text" name="cr" id="cr">
+            <label for="cr_sa">Sub Area</label>
+            <input type="text" name="cr_sa" id="cr_sa">
+            <label for="cr_level">Level</label>
+            <input type="number" name="cr_level" id="cr_level">
+            <label for="cr_tcs">TCs</label>
+            <input type="number" name="cr_tcs" id="cr_tcs">
+        </div>
+        <input type="submit" name="update_progress" value="Update Total" class="btn btn-danger">
+        <input type="submit" name="update_progress" value="Append to Total" class="btn btn-danger" disabled>
+    </div>
+</form>
 <script>
 $('#spfield select[name="sp_select"]').change(function(e) {
     document.getElementById('hidensp').value = document.getElementById('sp_select').value;
@@ -37,7 +47,7 @@ $('#areafield select[name="area_select"]').change(function(e) {
     document.getElementById('hidenarea').value = document.getElementById('area_select').value;
     document.getElementById('area_select').disabled = true;
     $('#statusupdate').show();
-    populateTable('mainTable', 'area_select');
+    populateTable('mainTable', 'area_select', 'sp_select');
 });
 </script>
 {% endblock %}

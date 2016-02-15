@@ -104,15 +104,34 @@ def updateTestStatus(request):
         'sidemenu': {'load': 'hardcode'}
     }
 
-    spn = ProductViewHelper._query_by_spid(sp_id=request.POST.get('sp_select'))
-    ar = request.POST.get('area_select')
-
-    if spn:
-        context.setdefault('sp_name', spn)
-
-    if ar:
-        context.setdefault('area', ar)
+    if request.POST.get("update_progress") == "Update Total":
+        spn = ProductViewHelper._query_by_spid(
+            sp_id=request.POST.get('sp_select'))
+        ar = request.POST.get('area_select')
+        logger.error(spn)
+        logger.error(ar)
 
     ProductViewHelper._load_data_for_forms(context, get='sps')
     ProductViewHelper._load_data_for_forms(context, get='areas')
-    return render(request, 'amend/updateteststatus.html', context)
+
+    return render(request, 'amend/updatestatus.html', context)
+
+
+def updateCrs(request):
+    page = reverse('updatecrs')
+    context = {
+        'page': page,
+        'sidemenu': {'load': 'hardcode'}
+    }
+
+    if request.POST.get("update_failures") == "Update CRs":
+        spn = ProductViewHelper._query_by_spid(
+            sp_id=request.POST.get('sp_select'))
+        ar = request.POST.get('area_select')
+        logger.error(spn)
+        logger.error(ar)
+
+    ProductViewHelper._load_data_for_forms(context, get='sps')
+    ProductViewHelper._load_data_for_forms(context, get='areas')
+
+    return render(request, 'amend/updatestatus.html', context)
